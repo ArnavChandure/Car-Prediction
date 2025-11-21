@@ -1,0 +1,13 @@
+# Python files
+__pycache__/
+*.pyc
+
+# Model and Data
+*.pkl
+car data.csv
+
+# Environment (CRITICAL for security)
+.env
+
+# Virtual Environment
+venv/

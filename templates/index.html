@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Price Predictor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --primary-accent: #BB86FC;
+            --secondary-accent: #03DAC6;
+            --text-light: #E0E0E0;
+            --text-muted: #A0A0A0;
+            --shadow-color: rgba(0, 0, 0, 0.6);
+            --border-color: #333333;
+            --success-color: #4CAF50; /* A slightly more vibrant green */
+            --error-color: #CF6679;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            background-image: linear-gradient(135deg, var(--dark-bg) 0%, #000000 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 45px var(--shadow-color);
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary-accent);
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(187, 134, 252, 0.3);
+        }
+
+        p.subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 10px rgba(187, 134, 252, 0.3);
+            outline: none;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23BB86FC" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            background-size: 18px;
+        }
+
+        button {
+            background-image: linear-gradient(90deg, var(--primary-accent) 0%, var(--secondary-accent) 100%);
+            color: var(--dark-bg);
+            padding: 16px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 20px rgba(187, 134, 252, 0.2);
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(187, 134, 252, 0.4);
+        }
+
+        #prediction_text {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--secondary-accent);
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--dark-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            box-shadow: 0 5px 20px var(--shadow-color);
+        }
+        
+        .nav-bar {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .nav-bar a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s, transform 0.2s;
+        }
+        
+        .nav-bar a:hover {
+            color: var(--secondary-accent);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="nav-bar">
+            <a href="{{ url_for('history') }}"><i class="fas fa-history"></i> View History</a>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+        <form action="{{ url_for('predict')}}" method="post">
+            <h1>Car Price Predictor 🚗</h1>
+            <p class="subtitle">Find out the estimated selling price of your used car.</p>
+
+            <div class="form-group">
+                <label for="year">Year</label>
+                <input id="year" name="Year" type="number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Showroom Price (in Lakhs)</label>
+                <input id="price" name="Present_Price" type="number" step="0.01" required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="kms">Kilometers Driven</label>
+                <input id="kms" name="Kms_Driven" type="number" required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="owners">Number of Previous Owners</label>
+                <input id="owners" name="Owner" type="number" min="0" max="3" required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="fuel">Fuel Type</label>
+                <select name="Fuel_Type_Petrol" id="fuel" required="required">
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="CNG">CNG</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="seller">Seller Type</label>
+                <select name="Seller_Type_Individual" id="seller" required="required">
+                    <option value="Dealer">Dealer</option>
+                    <option value="Individual">Individual</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="transmission">Transmission Type</label>
+                <select name="Transmission_Mannual" id="transmission" required="required">
+                    <option value="Mannual">Manual</option>
+                    <option value="Automatic">Automatic</option>
+                </select>
+            </div>
+
+            <button id="sub" type="submit">Predict Selling Price</button>
+        </form>
+
+        <h3 id="prediction_text">{{ prediction_text }}</h3>
+    </div>
+</body>
+
+</html>
